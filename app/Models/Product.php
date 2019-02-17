@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Product extends Model
 {
-    use Uuids;
+    use Uuids, Sluggable;
 
     public $incrementing = false;
 
@@ -15,7 +16,7 @@ class Product extends Model
         'product_category_id',
         'code',
         'name',
-        'slag',
+        'slug',
         'regular_price',
         'sell_price',
         'discount',
@@ -28,6 +29,15 @@ class Product extends Model
         'is_featured',
         'is_publish',
     ];
+
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'name'
+            ]
+        ];
+    }
 
     public function medias()
     {

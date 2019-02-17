@@ -84,9 +84,9 @@
                     <label for="stock_status_id">Stock Status</label>
                     <select v-validate="'required|integer'" name="stock_status_id" :class="{'form-control': true, 'is-invalid': !!errors.first('stock_status_id')}"
                         v-model="formData.stock_status_id" data-vv-name="stock_status_id" data-vv-as="Stock Status">
-                            <option value="">Select stock status ... </option>
-                            <option v-for="cat in stockStatus" :value="cat.id" :key="cat.id">@{{ cat.name }}</option>
-                        </select>
+                        <option value="">Select stock status ... </option>
+                        <option v-for="cat in stockStatus" :value="cat.id" :key="cat.id">@{{ cat.name }}</option>
+                    </select>
                     <div class="invalid-feedback" v-if="errors.first('stock_status_id')">
                         @{{ errors.first('stock_status_id') }}
                     </div>
@@ -153,20 +153,20 @@
         el: '#app',
         data: {
             formData: {
-                code: '',
-                name: '',
-                product_category_id: '',
-                regular_price: '',
-                sell_price: '',
+                code: 'ABCD',
+                name: 'Shirt',
+                product_category_id: 1,
+                regular_price: 100000,
+                sell_price: '98000',
                 discount: '',
                 tax: '',
-                stock: '',
-                stock_status_id: '',
+                stock: 100,
+                stock_status_id: 1,
                 ordering: '',
                 material: '',
                 tags: '',
-                is_featured: '',
-                is_publish: '',
+                is_featured: 1,
+                is_publish: 1,
             },
             categories: [],
             stockStatus: [],
@@ -174,31 +174,58 @@
         },
         mounted() {
             this.initData()
+            this.saveProduct()
         },
         methods: {
             initData() {
                 axios.get('/api/combo-data?model=ProductCategory')
-                .then(res => {
-                    if(res.status === 200) {
-                        this.categories = res.data
-                    }
-                }).catch(e => console.log(e))
+                    .then(res => {
+                        if (res.status === 200) {
+                            this.categories = res.data
+                        }
+                    }).catch(e => console.log(e))
                 axios.get('/api/combo-data?model=StockStatus')
-                .then(res => {
-                    if(res.status === 200) {
-                        this.stockStatus = res.data
-                    }
-                }).catch(e => console.log(e))
+                    .then(res => {
+                        if (res.status === 200) {
+                            this.stockStatus = res.data
+                        }
+                    }).catch(e => console.log(e))
             },
             submit(e) {
                 e.preventDefault()
                 this.$validator.validate().then(result => {
                     if (result) {
-                        alert('submit')
+                        this.saveProduct()
                         return;
 
                     }
                 });
+            },
+            saveProduct() {
+                axios.post('/api/products', this.formData)
+                    .then(res => {
+                        if(res.status === 201) {
+                            window.location.replace('/admin/products')
+                        }
+                    })
+                    .catch(e => {
+                        const {
+                            errors
+                        } = e.response.data
+                        _.forEach(errors, (value, key) => {
+                            this.showNoty(_.trim(value), 'error');
+                        });
+                    })
+            },
+            showNoty(text, type) {
+                return new Noty({
+                    layout: "topRight",
+                    text,
+                    theme: "metroui",
+                    timeout: 5000,
+                    progressBar: true,
+                    type
+                }).show();
             }
         }
     })
