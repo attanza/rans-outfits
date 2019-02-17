@@ -1,12 +1,29 @@
-@extends('layouts.app')
-
+@extends('layouts.app') 
 @section('content')
-<div class="row justify-content-between">
+<div class="row justify-content-between mb-2">
     <div class="col">
         <h1>Products</h1>
     </div>
     <div class="col text-right">
         <a href="/admin/products/create" class="btn btn-primary">Create New Product</a>
+    </div>
+</div>
+<div class="row justify-content-between mb-2">
+    <div class="col-md-2 mb-1">
+        <select class="form-control" v-model="pagination.per_page" @change="getProducts">
+            <option v-for="show in shows" :value="show">@{{ show }}</option>
+        </select>
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col text-right mb-1">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" v-model="search" placeholder="Search ..." aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">
+                    <i class="material-icons">search</i>
+                </span>
+            </div>
+        </div>
     </div>
 </div>
 <div class="table-responsive">
@@ -24,8 +41,8 @@
             <tr v-for="product in products" :key="product.id">
                 <td scope="row"><a :href="`/admin/products/${product.id}`">@{{ product.code }}</a></td>
                 <td scope="row">@{{ product.name }}</td>
-                <td scope="row">@{{ product.regular_price }}</td>
-                <td scope="row">@{{ product.sell_price }}</td>
+                <td scope="row">@{{ product.regular_price.toLocaleString() }}</td>
+                <td scope="row">@{{ product.sell_price.toLocaleString() }}</td>
                 <td scope="row">@{{ product.stock }}</td>
             </tr>
         </tbody>
@@ -37,11 +54,6 @@
             Showing @{{ pagination.from }} to @{{ pagination.to }} of @{{ pagination.total }}
         </p>
     </div>
-    <div class="col">
-        <select class="form-control" v-model="pagination.per_page" @change="getProducts">
-            <option v-for="show in shows" :value="show">@{{ show }}</option>
-        </select>
-    </div>
     <div class="col text-right">
 
         <nav aria-label="Page navigation example">
@@ -52,8 +64,7 @@
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
-                <li class="page-item" v-for="n in pagination.last_page"><a class="page-link" href="javascript:void(0)"
-                        @click="toPage(n)">@{{ n }}</a></li>
+                <li class="page-item" v-for="n in pagination.last_page"><a class="page-link" href="javascript:void(0)" @click="toPage(n)">@{{ n }}</a></li>
                 <li :class="{ 'page-item': true, 'disabled':  !pagination.next_page_url}">
                     <a class="page-link" href="javascript:void(0)" @click="toPage('next')" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -65,17 +76,26 @@
     </div>
 </div>
 @endsection
+ 
 @section('scripts')
 <script>
     new Vue({
         el: '#app',
         data: {
             products: [],
+            search: '',
             pagination: {
                 current_page: 1,
-                per_page: 10
+                per_page: 10,
             },
             shows: [10, 25, 50, 100]
+        },
+        watch: {
+            search: {
+                handler: _.debounce(function () {
+                    this.getProducts();
+                }, 500)
+            }
         },
         mounted() {
             this.getProducts()
@@ -92,7 +112,8 @@
                 this.getProducts()
             },
             getProducts() {
-                const endpoint = `/api/products?page=${this.pagination.current_page}&per_page=${this.pagination.per_page}`
+                const endpoint =
+                    `/api/products?page=${this.pagination.current_page}&per_page=${this.pagination.per_page}&search=${this.search}`
                 axios.get(endpoint).then(res => {
                     if (res.status === 200) {
                         this.products = res.data.data

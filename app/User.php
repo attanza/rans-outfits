@@ -6,20 +6,18 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 use App\Traits\Uuids;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-    use Uuids;
+    use HasApiTokens, Notifiable, Uuids;
 
     public $incrementing = false;
 
     public function setPasswordAttribute($pass)
     {
-
         $this->attributes['password'] = Hash::make($pass);
-
     }
 
     /**

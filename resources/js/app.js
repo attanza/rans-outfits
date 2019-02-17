@@ -6,7 +6,11 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue';
+import VeeValidate from 'vee-validate';
+
+window.Vue = Vue;
+Vue.use(VeeValidate);
 
 /**
  * The following block of code may be used to automatically register your

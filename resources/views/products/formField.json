@@ -1,0 +1,87 @@
+{
+  "products": [{
+      "key": "product_category_id",
+      "caption": "Category",
+      "rules": "requred|integer",
+      "type": "select"
+    },
+    {
+      "key": "code",
+      "caption": "Code",
+      "rules": "requred|string|max:20",
+      "type": "text"
+    },
+    {
+      "key": "name",
+      "caption": "Name",
+      "rules": "requred|string|max:100",
+      "type": "text"
+    },
+    {
+      "key": "regular_price",
+      "caption": "Regular Price",
+      "rules": "requred|integer",
+      "type": "number"
+    },
+    {
+      "key": "sell_price",
+      "caption": "Sell Price",
+      "rules": "integer",
+      "type": "number"
+    },
+    {
+      "key": "discount",
+      "caption": "Discount",
+      "rules": "integer",
+      "type": "number"
+    },
+    {
+      "key": "tax",
+      "caption": "Tax",
+      "rules": "integer",
+      "type": "number"
+    },
+    {
+      "key": "stock",
+      "caption": "Stock",
+      "rules": "integer",
+      "type": "number"
+    },
+    {
+      "key": "stock_status_id",
+      "caption": "Stock Status",
+      "rules": "required|integer",
+      "type": "select"
+    },
+    {
+      "key": "ordering",
+      "caption": "Menu Ordering",
+      "rules": "integer",
+      "type": "number"
+    },
+    {
+      "key": "material",
+      "caption": "Material",
+      "rules": "string|max:250",
+      "type": "text"
+    },
+    {
+      "key": "tags",
+      "caption": "Tags",
+      "rules": "string|max:250",
+      "type": "text"
+    },
+    {
+      "key": "is_featured",
+      "caption": "Make Feature",
+      "rules": "boolean",
+      "type": "switch"
+    },
+    {
+      "key": "is_publish",
+      "caption": "Publish",
+      "rules": "boolean",
+      "type": "switch"
+    }
+  ]
+}
