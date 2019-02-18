@@ -12,11 +12,15 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = $request->query();
         $per_page = $request->query('per_page');
         $search = $request->query('search');
+        $page = $request->query('page');
+        $sort_by = $request->query('sort_by');
+        $sort_mode = $request->query('sort_mode');
+        if (!isset($sort_by)) $sort_by = 'name';
+        if (!isset($sort_mode)) $sort_mode = 'asc';
 
-        $cacheKey = "Product_$per_page";
+        $cacheKey = "Product_$page.$per_page.$sort_by.$sort_mode";
 
         $cache = Cache::get($cacheKey);
         if (isset($cache)) {
@@ -35,11 +39,13 @@ class ProductController extends Controller
                 $query->orWhere('stock', 'LIKE', "%$search%");
 
             }
-        })->paginate($per_page);
+        })
+            ->orderBy($sort_by, $sort_mode)
+            ->paginate($per_page);
         $parsed = $products->toArray();
 
         if (!isset($search) || $search == '') {
-            Cache::forever($cacheKey, $products);
+            Cache::tags('Product')->forever($cacheKey, $products);
         }
 
         return response()->json($parsed, 200);
@@ -48,7 +54,15 @@ class ProductController extends Controller
     public function store(StoreProduct $request)
     {
         $product = Product::create($request->all());
-        Cache::forget('Product_');
+        Cache::tags('Product')->flush();
+        return response()->json($product, 201);
+    }
+
+    public function update(Request $request)
+    {
+        // $product = Product::create($request->all());
+        // Cache::tags('Product')->flush();
+        $product = $request->all();
         return response()->json($product, 201);
     }
 }
