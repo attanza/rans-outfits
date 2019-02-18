@@ -25,8 +25,8 @@ class StoreProduct extends FormRequest
     {
         return [
             'product_category_id' => 'required|integer',
-            'code' => 'required|string|max:20|unique:products',
-            'name' => 'required|string|max:150|unique:products',
+            'code' => 'required|string|max:20|unique:products,code,' . $this->id,
+            'name' => 'required|string|max:150|unique:products,name,' . $this->id,
             'regular_price' => 'required|integer',
             'sell_price' => 'nullable|integer',
             'discount' => 'nullable|integer',

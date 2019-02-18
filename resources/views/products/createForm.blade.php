@@ -137,9 +137,4 @@
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col">
-            <textarea name="article-ckeditor" id="article-ckeditor" cols="30" rows="10"></textarea>
-        </div>
-    </div>
 </form>

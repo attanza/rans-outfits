@@ -3,7 +3,7 @@
 <h2 class="mb-3">Create New Product</h2>
 <div class="card">
     <div class="card-body">
-    @include('products.detailForm')
+    @include('products.createForm')
     </div>
 </div>
 @endsection

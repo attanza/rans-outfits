@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Http\Requests\StoreProduct;
+use App\Models\ProductDescription;
+use App\Http\Requests\StoreProductDescription;
+use Illuminate\Support\Facades\Cache;
 
-class ProductController extends Controller
+class ProductDescriptionController extends Controller
 {
     public function index(Request $request)
     {
@@ -20,7 +20,7 @@ class ProductController extends Controller
         if (!isset($sort_by)) $sort_by = 'name';
         if (!isset($sort_mode)) $sort_mode = 'asc';
 
-        $cacheKey = "Product_$page.$per_page.$sort_by.$sort_mode";
+        $cacheKey = "ProductDescription_$page.$per_page.$sort_by.$sort_mode";
 
         $cache = Cache::get($cacheKey);
         if (isset($cache)) {
@@ -30,14 +30,10 @@ class ProductController extends Controller
         if (!isset($per_page)) {
             $per_page = 10;
         }
-        $products = Product::where(function ($query) use ($search) {
+        $descripton = ProductDescription::where(function ($query) use ($search) {
             if ($search && $search != '') {
-                $query->where('name', 'LIKE', "%$search%");
-                $query->orWhere('code', 'LIKE', "%$search%");
-                $query->orWhere('regular_price', 'LIKE', "%$search%");
-                $query->orWhere('sell_price', 'LIKE', "%$search%");
-                $query->orWhere('stock', 'LIKE', "%$search%");
-
+                $query->where('short_description', 'LIKE', "%$search%");
+                $query->orWhere('short_description', 'LIKE', "%$search%");
             }
         })
             ->orderBy($sort_by, $sort_mode)
@@ -51,23 +47,23 @@ class ProductController extends Controller
         return response()->json($parsed, 200);
     }
 
-    public function store(StoreProduct $request)
+    public function store(StoreProductDescription $request)
     {
-        $product = Product::create($request->all());
+        $product = ProductDescription::create($request->all());
         Cache::tags('Product')->flush();
         return response()->json($product, 201);
     }
 
-    public function update(StoreProduct $request, $id)
+    public function update(StoreProductDescription $request, $id)
     {
-        $product = Product::find($id);
-        if (!$product) {
+        $data = ProductDescription::find($id);
+        if (!$data) {
             return response()->json([
                 'msg' => 'Product not found'
             ], 400);
         }
-        $product->update($request->all());
+        $data->update($request->all());
         Cache::tags('Product')->flush();
-        return response()->json($product, 200);
+        return response()->json($data, 200);
     }
 }

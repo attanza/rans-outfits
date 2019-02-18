@@ -18,9 +18,14 @@ class ProductController extends Controller
         return view('products.create');
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $product = Product::find($id);
-        return view('products.show')->with(['product' => $product]);
+        $activeTab = $request->query('activeTab');
+        if (!isset($activeTab)) $activeTab = 'detail';
+        $product = Product::with('description')->find($id);
+        return view('products.show')->with([
+            'product' => $product,
+            'activeTab' => $activeTab
+        ]);
     }
 }

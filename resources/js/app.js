@@ -9,6 +9,12 @@ Vue.use(VeeValidate);
 import Noty from "noty"
 window.Noty = Noty
 
+import CKEditor from "@ckeditor/ckeditor5-vue";
+Vue.use(CKEditor);
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+window.ClassicEditor = ClassicEditor;
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,8 +25,7 @@ window.Noty = Noty
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('vue-ckeditor', VueCkeditor.default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
